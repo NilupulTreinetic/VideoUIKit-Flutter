@@ -43,10 +43,14 @@ class _MyAppState extends State<MyApp> {
           child: Stack(
             children: [
               AgoraVideoViewer(
-                client: client,
-                layoutType: Layout.floating,
-                enableHostControls: true, // Add this to enable host controls
-              ),
+                  client: client,
+                  layoutType: Layout.floating,
+                  enableHostControls: true,
+                  disabledVideoWidget: (value) {
+                    return SizedBox();
+                  }
+                  // Add this to enable host controls
+                  ),
               AgoraVideoButtons(
                 client: client,
                 addScreenSharing: false, // Add this to enable screen sharing

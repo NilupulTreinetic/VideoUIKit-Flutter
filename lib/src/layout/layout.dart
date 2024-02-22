@@ -28,7 +28,9 @@ class AgoraVideoViewer extends StatefulWidget {
   final EdgeInsets floatingLayoutSubViewPadding;
 
   /// Widget that will be displayed when the local or remote user has disabled it's video.
-  final Widget disabledVideoWidget;
+  final Widget disabledVideoWidgetBuilder;
+
+  final Widget Function(int?) disabledVideoWidget;
 
   /// Display the camera and microphone status of a user. This feature is only available in the [Layout.floating]
   final bool showAVState;
@@ -41,20 +43,22 @@ class AgoraVideoViewer extends StatefulWidget {
   /// Render mode for local and remote video
   final RenderModeType renderModeType;
 
-  const AgoraVideoViewer({
-    Key? key,
-    required this.client,
-    this.layoutType = Layout.grid,
-    this.floatingLayoutContainerHeight,
-    this.floatingLayoutContainerWidth,
-    this.floatingLayoutMainViewPadding = const EdgeInsets.fromLTRB(3, 0, 3, 3),
-    this.floatingLayoutSubViewPadding = const EdgeInsets.fromLTRB(3, 3, 0, 3),
-    this.disabledVideoWidget = const DisabledVideoWidget(),
-    this.showAVState = false,
-    this.enableHostControls = false,
-    this.showNumberOfUsers = false,
-    this.renderModeType = RenderModeType.renderModeHidden,
-  }) : super(key: key);
+  const AgoraVideoViewer(
+      {Key? key,
+      required this.client,
+      this.layoutType = Layout.grid,
+      this.floatingLayoutContainerHeight,
+      this.floatingLayoutContainerWidth,
+      this.floatingLayoutMainViewPadding =
+          const EdgeInsets.fromLTRB(3, 0, 3, 3),
+      this.floatingLayoutSubViewPadding = const EdgeInsets.fromLTRB(3, 3, 0, 3),
+      this.disabledVideoWidgetBuilder = const DisabledVideoWidget(),
+      this.showAVState = false,
+      this.enableHostControls = false,
+      this.showNumberOfUsers = false,
+      this.renderModeType = RenderModeType.renderModeHidden,
+      required this.disabledVideoWidget})
+      : super(key: key);
 
   @override
   State<AgoraVideoViewer> createState() => _AgoraVideoViewerState();
@@ -87,13 +91,13 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
         return GridLayout(
           client: widget.client,
           showNumberOfUsers: widget.showNumberOfUsers,
-          disabledVideoWidget: widget.disabledVideoWidget,
+          disabledVideoWidget: widget.disabledVideoWidgetBuilder,
           renderModeType: widget.renderModeType,
         );
       case Layout.oneToOne:
         return OneToOneLayout(
           client: widget.client,
-          disabledVideoWidget: widget.disabledVideoWidget,
+          disabledVideoWidget: widget.disabledVideoWidgetBuilder,
           renderModeType: widget.renderModeType,
         );
       default:
