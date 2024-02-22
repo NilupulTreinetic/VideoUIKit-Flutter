@@ -24,7 +24,7 @@ class FloatingLayout extends StatefulWidget {
   final EdgeInsets floatingLayoutSubViewPadding;
 
   /// Widget that will be displayed when the local or remote user has disabled it's video.
-  final Widget disabledVideoWidget;
+  final Widget Function(int?) disabledVideoWidget;
 
   /// Display the camera and microphone status of a user. This feature is only available in the [Layout.floating]
   final bool? showAVState;
@@ -48,7 +48,7 @@ class FloatingLayout extends StatefulWidget {
     this.floatingLayoutContainerWidth,
     this.floatingLayoutMainViewPadding = const EdgeInsets.fromLTRB(3, 0, 3, 3),
     this.floatingLayoutSubViewPadding = const EdgeInsets.fromLTRB(3, 3, 0, 3),
-    this.disabledVideoWidget = const DisabledVideoWidget(),
+    required this.disabledVideoWidget,
     this.showAVState = false,
     this.enableHostControl = false,
     this.showNumberOfUsers,
@@ -161,7 +161,8 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                         ],
                                                       )
                                                     : widget
-                                                        .disabledVideoWidget,
+                                                        .disabledVideoWidget(
+                                                            null),
                                                 Positioned.fill(
                                                   child: Align(
                                                     alignment:
@@ -225,7 +226,13 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                   Container(
                                                     color: Colors.black,
                                                   ),
-                                                  widget.disabledVideoWidget,
+                                                  widget.disabledVideoWidget(
+                                                      widget
+                                                          .client
+                                                          .sessionController
+                                                          .value
+                                                          .users[index]
+                                                          .uid),
                                                   Positioned.fill(
                                                     child: Row(
                                                       mainAxisAlignment:
@@ -262,7 +269,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                                 ),
                                                                 padding:
                                                                     const EdgeInsets
-                                                                            .all(
+                                                                        .all(
                                                                         3.0),
                                                                 child: Icon(
                                                                   Icons
@@ -381,7 +388,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                                 ),
                                                                 padding:
                                                                     const EdgeInsets
-                                                                            .all(
+                                                                        .all(
                                                                         3.0),
                                                                 child: Icon(
                                                                   Icons
@@ -461,7 +468,8 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                             padding: widget.floatingLayoutMainViewPadding,
                             child: widget.client.sessionController.value
                                     .mainAgoraUser.videoDisabled
-                                ? widget.disabledVideoWidget
+                                ? widget.disabledVideoWidget(widget.client
+                                    .sessionController.value.mainAgoraUser.uid)
                                 : Column(
                                     children: [
                                       _videoView(_getRemoteViews(widget
@@ -507,7 +515,8 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                     .isLocalVideoDisabled &&
                                 !widget.client.sessionController.value
                                     .isScreenShared
-                            ? widget.disabledVideoWidget
+                            ? widget.disabledVideoWidget(
+                                widget.client.sessionController.value.localUid)
                             : Stack(
                                 children: [
                                   Container(
@@ -538,7 +547,9 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                     !widget.client.sessionController.value.isScreenShared
                 ? Column(
                     children: [
-                      Expanded(child: widget.disabledVideoWidget),
+                      Expanded(
+                          child: widget.disabledVideoWidget(
+                              widget.client.sessionController.value.localUid)),
                     ],
                   )
                 : Container(
