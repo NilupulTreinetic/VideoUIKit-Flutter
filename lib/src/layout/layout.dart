@@ -30,7 +30,11 @@ class AgoraVideoViewer extends StatefulWidget {
   /// Widget that will be displayed when the local or remote user has disabled it's video.
   final Widget disabledVideoWidgetBuilder;
 
-  final Widget Function(int?) disabledVideoWidget;
+  final Widget? disabledVideoWidget;
+
+  final Widget Function(int?)? customDisabledVideoWidget;
+
+  final Widget Function(int?) userNameWidget;
 
   /// Display the camera and microphone status of a user. This feature is only available in the [Layout.floating]
   final bool showAVState;
@@ -57,7 +61,9 @@ class AgoraVideoViewer extends StatefulWidget {
       this.enableHostControls = false,
       this.showNumberOfUsers = false,
       this.renderModeType = RenderModeType.renderModeHidden,
-      required this.disabledVideoWidget})
+      this.disabledVideoWidget = const DisabledVideoWidget(),
+      this.customDisabledVideoWidget,
+      required this.userNameWidget})
       : super(key: key);
 
   @override
@@ -77,7 +83,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
       case Layout.floating:
         return FloatingLayout(
           client: widget.client,
-          disabledVideoWidget: widget.disabledVideoWidget,
+          disabledVideoWidget: widget.disabledVideoWidget!,
           floatingLayoutContainerHeight: widget.floatingLayoutContainerHeight,
           floatingLayoutContainerWidth: widget.floatingLayoutContainerWidth,
           floatingLayoutMainViewPadding: widget.floatingLayoutMainViewPadding,
@@ -86,6 +92,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
           enableHostControl: widget.enableHostControls,
           showNumberOfUsers: widget.showNumberOfUsers,
           renderModeType: widget.renderModeType,
+          userNameWidget: widget.userNameWidget,
+          customDisabledVideoWidget: widget.customDisabledVideoWidget,
         );
       case Layout.grid:
         return GridLayout(
@@ -103,7 +111,7 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
       default:
         return FloatingLayout(
           client: widget.client,
-          disabledVideoWidget: widget.disabledVideoWidget,
+          disabledVideoWidget: widget.disabledVideoWidget!,
           floatingLayoutContainerHeight: widget.floatingLayoutContainerHeight,
           floatingLayoutContainerWidth: widget.floatingLayoutContainerWidth,
           floatingLayoutMainViewPadding: widget.floatingLayoutMainViewPadding,
@@ -112,6 +120,8 @@ class _AgoraVideoViewerState extends State<AgoraVideoViewer> {
           enableHostControl: widget.enableHostControls,
           showNumberOfUsers: widget.showNumberOfUsers,
           renderModeType: widget.renderModeType,
+          userNameWidget: widget.userNameWidget,
+          customDisabledVideoWidget: widget.customDisabledVideoWidget,
         );
     }
   }

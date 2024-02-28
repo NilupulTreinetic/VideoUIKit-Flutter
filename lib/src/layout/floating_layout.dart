@@ -24,7 +24,11 @@ class FloatingLayout extends StatefulWidget {
   final EdgeInsets floatingLayoutSubViewPadding;
 
   /// Widget that will be displayed when the local or remote user has disabled it's video.
-  final Widget Function(int?) disabledVideoWidget;
+  final Widget disabledVideoWidget;
+
+  final Widget Function(int?) userNameWidget;
+
+  final Widget Function(int?)? customDisabledVideoWidget;
 
   /// Display the camera and microphone status of a user. This feature is only available in the [Layout.floating]
   final bool? showAVState;
@@ -49,6 +53,8 @@ class FloatingLayout extends StatefulWidget {
     this.floatingLayoutMainViewPadding = const EdgeInsets.fromLTRB(3, 0, 3, 3),
     this.floatingLayoutSubViewPadding = const EdgeInsets.fromLTRB(3, 3, 0, 3),
     required this.disabledVideoWidget,
+    required this.userNameWidget,
+    this.customDisabledVideoWidget,
     this.showAVState = false,
     this.enableHostControl = false,
     this.showNumberOfUsers,
@@ -160,9 +166,12 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                               _getLocalViews()),
                                                         ],
                                                       )
-                                                    : widget
-                                                        .disabledVideoWidget(
-                                                            null),
+                                                    : widget.customDisabledVideoWidget !=
+                                                            null
+                                                        ? widget.customDisabledVideoWidget!(
+                                                            null)
+                                                        : widget
+                                                            .disabledVideoWidget,
                                                 Positioned.fill(
                                                   child: Align(
                                                     alignment:
@@ -226,13 +235,17 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                   Container(
                                                     color: Colors.black,
                                                   ),
-                                                  widget.disabledVideoWidget(
-                                                      widget
-                                                          .client
-                                                          .sessionController
-                                                          .value
-                                                          .users[index]
-                                                          .uid),
+                                                  widget.customDisabledVideoWidget !=
+                                                          null
+                                                      ? widget.customDisabledVideoWidget!(
+                                                          widget
+                                                              .client
+                                                              .sessionController
+                                                              .value
+                                                              .users[index]
+                                                              .uid)
+                                                      : widget
+                                                          .disabledVideoWidget,
                                                   Positioned.fill(
                                                     child: Row(
                                                       mainAxisAlignment:
@@ -468,8 +481,14 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                             padding: widget.floatingLayoutMainViewPadding,
                             child: widget.client.sessionController.value
                                     .mainAgoraUser.videoDisabled
-                                ? widget.disabledVideoWidget(widget.client
-                                    .sessionController.value.mainAgoraUser.uid)
+                                ? widget.customDisabledVideoWidget != null
+                                    ? widget.customDisabledVideoWidget!(widget
+                                        .client
+                                        .sessionController
+                                        .value
+                                        .mainAgoraUser
+                                        .uid)
+                                    : widget.disabledVideoWidget
                                 : Column(
                                     children: [
                                       _videoView(_getRemoteViews(widget
@@ -515,8 +534,10 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                     .isLocalVideoDisabled &&
                                 !widget.client.sessionController.value
                                     .isScreenShared
-                            ? widget.disabledVideoWidget(
-                                widget.client.sessionController.value.localUid)
+                            ? widget.customDisabledVideoWidget != null
+                                ? widget.customDisabledVideoWidget!(widget
+                                    .client.sessionController.value.localUid)
+                                : widget.disabledVideoWidget
                             : Stack(
                                 children: [
                                   Container(
@@ -548,8 +569,10 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                 ? Column(
                     children: [
                       Expanded(
-                          child: widget.disabledVideoWidget(
-                              widget.client.sessionController.value.localUid)),
+                          child: widget.customDisabledVideoWidget != null
+                              ? widget.customDisabledVideoWidget!(widget
+                                  .client.sessionController.value.localUid)
+                              : widget.disabledVideoWidget),
                     ],
                   )
                 : Container(
