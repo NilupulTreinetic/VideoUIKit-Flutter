@@ -160,9 +160,13 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                               _getLocalViews()),
                                                         ],
                                                       )
-                                                    : widget
-                                                        .disabledVideoWidget(
-                                                            null),
+                                                    : widget.disabledVideoWidget(
+                                                        widget
+                                                            .client
+                                                            .sessionController
+                                                            .value
+                                                            .users[index]
+                                                            .uid),
                                                 Positioned.fill(
                                                   child: Align(
                                                     alignment:
