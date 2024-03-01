@@ -344,15 +344,18 @@ class _FloatingLayoutState extends State<FloatingLayout> {
                                                 children: [
                                                   Column(
                                                     children: [
-                                                      _videoView(
-                                                        _getRemoteViews(
-                                                          widget
-                                                              .client
-                                                              .sessionController
-                                                              .value
-                                                              .users[index]
-                                                              .uid,
-                                                        ),
+                                                      Container(
+                                                        height: 30,
+                                                        width: 100,
+                                                        color: Colors.blue,
+                                                      ),
+                                                      _getRemoteViews(
+                                                        widget
+                                                            .client
+                                                            .sessionController
+                                                            .value
+                                                            .users[index]
+                                                            .uid,
                                                       ),
                                                     ],
                                                   ),

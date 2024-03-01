@@ -15,8 +15,11 @@ Future<void> toggleMute({required SessionController sessionController}) async {
   }
   sessionController.value = sessionController.value
       .copyWith(isLocalUserMuted: !(sessionController.value.isLocalUserMuted));
+
   await sessionController.value.engine
       ?.muteLocalAudioStream(sessionController.value.isLocalUserMuted);
+  print(
+      "is video disabled---------------->${sessionController.value.isLocalVideoDisabled}");
 }
 
 /// Function to toggle enable/disable the camera
