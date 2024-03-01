@@ -99,7 +99,7 @@ class _FloatingLayoutState extends State<FloatingLayout> {
 
   /// Video view wrapper
   Widget _videoView(view) {
-    return Expanded(child: Container(child: view));
+    return Expanded(child: Container(color: Colors.red, child: view));
   }
 
   Widget _viewFloat() {
